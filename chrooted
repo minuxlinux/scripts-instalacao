@@ -1,0 +1,21 @@
+#!/bin/bash
+#=========================HEADER=========================================|
+#AUTOR
+# Jefferson Rocha AKA slackjeff <root@slackjeff.com.br>
+#
+# Entra em ambiente chroot.
+#========================================================================|
+
+# Diretorio aonde será feito o chroot
+TARGET='/mnt'
+
+# Montados diretórios especiais :)
+mount --bind /dev ${TARGET}/dev
+mount --bind /tmp ${TARGET}/tmp
+mount --bind /run ${TARGET}/run
+mount -t proc proc ${TARGET}/proc
+mount -t sysfs none ${TARGET}/sys
+mount -t devpts -o noexec,nosuid,gid=tty,mode=0620 devpts ${TARGET}/dev/pts
+
+echo -en "\e[31;1mCHROOT\e[m "
+chroot ${TARGET} /bin/bash

@@ -1,0 +1,42 @@
+#!/bin/bash
+#============================HEAD===================================|
+#AUTOR
+# Jefferson Rocha AKA Slackjeff <root@slackjeff.com.br>
+#
+# Instalador de pacotes para o sistema minuX.
+#===================================================================|
+
+#==================== vars
+VERSION='0.1'
+# Diretório aonde os pacotes vao estar montados.
+dir="/var/log/mount/packages"
+
+#==================== inicio
+series=$(
+ dialog                                                                       \
+    --stdout                                                                  \
+    --backtitle "Instalador minuX ${VERSION}."                                \
+    --title 'Categorias de pacotes.'                                          \
+    --checklist '\nSelecione as categorias que voce deseja fazer instalacao.' \
+    0 0 0                                                   \
+    a-core 'Coração do sistema.' on                         \
+    cli-apps 'Aplicativos que rodam via cli.' on            \
+    dev 'Ferramentas para compilacao e desenvolvedores.' on \
+    libs 'Bibliotecas necessarias.' on                      \
+    net 'Ferramentas necessarias para rede' off             \
+    xorg 'Servidor X' off                                   \
+    i3   'Tilling manager' off                              \
+    lxde 'Ambiente desktop simples' off
+)
+[[ $? != 0 ]] && exit 0
+
+pushd $dir &>/dev/null
+echo "Iniciando o processo de instalacao dos pacotes."
+sleep 2s
+for x in ${series[@]}; do
+    echo -e "\n######################################"
+    echo -e "--------> \e[31;1mSERIE: ${x}\e[m"
+    echo -e "#######################################\n"
+    sleep 3s
+    installpkg --root /mnt/  ${x}/*.t?z
+done
